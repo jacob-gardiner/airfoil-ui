@@ -4,9 +4,15 @@ import AirInput from './components/inputs/AirInput';
 
 function App() {
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto mt-4">
       <div>
         <AirInput placeholder="Some Placeholder Text" />
+        <div className="mt-3">
+          <AirInput
+            placeholder="Input in an error state"
+            error="There is an error"
+          />
+        </div>
       </div>
     </div>
   );
