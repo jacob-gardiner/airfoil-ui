@@ -1,4 +1,5 @@
 import React from 'react';
+import ErrorMessage from "./ErrorMessage";
 
 interface AirInputProps {
   placeholder?: string;
@@ -21,7 +22,6 @@ const AirInput: React.FC<AirInputProps> = ({
 }) => (
   <>
     <input
-      data-testid={airInputTestId}
       className={`${baseInputStyles} ${error ? 'border-red-500' : ''}`}
       type="text"
       aria-label={ariaLabel}
@@ -29,9 +29,9 @@ const AirInput: React.FC<AirInputProps> = ({
       disabled={disabled}
     />
     {error && (
-      <div data-testid={airInputErrorTestId} className="text-xs text-red-500">
+      <ErrorMessage>
         {error}
-      </div>
+      </ErrorMessage>
     )}
   </>
 );

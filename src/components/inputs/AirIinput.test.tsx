@@ -1,50 +1,80 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
-import AirInput, { airInputErrorTestId, airInputTestId } from './AirInput';
+import { render, cleanup, RenderResult } from '@testing-library/react/pure'
+import AirInput from './AirInput';
+
+const queryInput = () => document.querySelector('input');
+
+const errorMessageText = 'Im an error';
+
+jest.mock('./ErrorMessage', () => ({ children }: JSX.ElementChildrenAttribute) =>
+{
+  expect(children).toBe(errorMessageText)
+  return  (<div data-testid="error-message">Error goes here</div>)
+})
+
+const findByTestIdNotFound = (id: string) => `Unable to find an element by: [data-testid="${id}"]`
 
 describe('air input does what it should...', () => {
-  it('sets the placeholder text for the input', async () => {
-    render(<AirInput placeholder="My Placeholder" />);
 
-    const inputElement = await screen.findByTestId(airInputTestId);
-    expect(inputElement).toHaveAttribute('placeholder', 'My Placeholder');
-  });
-  it('sets the aria-label text for the input', async () => {
-    const ariaLabel = 'example-label';
-    render(<AirInput ariaLabel={ariaLabel} placeholder="My Placeholder" />);
+  describe('Input component', () => {
 
-    const inputElement = await screen.findByTestId(airInputTestId);
+    afterEach(() => {
+      cleanup();
+    });
+    it('defaults the type to text', async () => {
+      render(<AirInput />);
+      expect(queryInput()).toBeInTheDocument();
+    });
 
-    expect(inputElement).toHaveAttribute('aria-label', ariaLabel);
-  });
+    it('sets the placeholder text for the input', async () => {
+      render(<AirInput placeholder="My Placeholder" />);
 
-  it('defaults the type to text', async () => {
-    render(<AirInput />);
+      expect(queryInput()).toHaveAttribute('placeholder', 'My Placeholder');
+    });
+    it('sets the aria-label text for the input', async () => {
+      const ariaLabel = 'example-label';
+      render(<AirInput ariaLabel={ariaLabel} />);
 
-    const inputElement = await screen.findByTestId(airInputTestId);
-    expect(inputElement).toBeInTheDocument();
-  });
+      expect(queryInput()).toHaveAttribute('aria-label', ariaLabel);
+    });
 
-  it('can disable the input', async () => {
-    render(<AirInput disabled={true} />);
+    it('can disable the input', async () => {
+      render(<AirInput disabled={true} />);
 
-    const inputElement = await screen.findByTestId(airInputTestId);
-    expect(inputElement).toBeDisabled();
-  });
+      expect(queryInput()).toBeDisabled();
+    });
 
-  it('changes the border to red if there is an error', async () => {
-    const expectedErrorMessage = 'Something is wrong';
-    render(<AirInput error={expectedErrorMessage} />);
 
-    const inputElement = await screen.findByTestId(airInputTestId);
-    expect(inputElement).toHaveClass('border-red-500');
-  });
+    it('does not render the error message if there is no error', async () => {
+      const {
+        findByTestId
+      } = render(<AirInput />);
+      expect(queryInput()).not.toHaveClass('border-red-500');
+      await expect(findByTestId('error-message')).rejects.toThrow(findByTestIdNotFound('error-message'))
 
-  it('shows an error message if passed', async () => {
-    const expectedErrorMessage = 'Something is wrong';
-    render(<AirInput error={expectedErrorMessage} />);
+    });
 
-    const errorMessageElement = await screen.findByTestId(airInputErrorTestId);
-    expect(errorMessageElement).toHaveTextContent(expectedErrorMessage);
-  });
+  })
+  describe('Error component', () => {
+
+    let wrapper: RenderResult;
+
+    beforeAll(() => {
+      wrapper = render(<AirInput error={errorMessageText} />);
+    });
+
+    afterAll(() => {
+      cleanup();
+    })
+
+    it('changes the border to red if there is an error', async () => {
+      expect(queryInput()).toHaveClass('border-red-500');
+    });
+    it('shows an error message if passed', async () => {
+      const errorMessageElement = await wrapper.findByTestId('error-message');
+      expect(errorMessageElement).toBeInTheDocument();
+    });
+
+
+  })
 });
