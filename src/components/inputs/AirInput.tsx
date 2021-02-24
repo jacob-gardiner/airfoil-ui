@@ -1,5 +1,5 @@
 import React from 'react';
-import ErrorMessage from "./ErrorMessage";
+import ErrorMessage from './ErrorMessage';
 
 interface AirInputProps {
   placeholder?: string;
@@ -12,7 +12,7 @@ export const airInputTestId = 'airfoilInput';
 export const airInputErrorTestId = 'airfoilInputError';
 
 const baseInputStyles =
-  'focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-7 pr-12 sm:text-sm border border-gray-300 rounded-md';
+  'focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md';
 
 const AirInput: React.FC<AirInputProps> = ({
   placeholder,
@@ -28,11 +28,7 @@ const AirInput: React.FC<AirInputProps> = ({
       placeholder={placeholder}
       disabled={disabled}
     />
-    {error && (
-      <ErrorMessage>
-        {error}
-      </ErrorMessage>
-    )}
+    {error && <ErrorMessage>{error}</ErrorMessage>}
   </>
 );
 
