@@ -13,6 +13,12 @@ function App() {
             error="There is an error"
           />
         </div>
+        <div className="mt-3">
+          <AirInput
+            placeholder="Input with aria label"
+            ariaLabel="example-aria-label"
+          />
+        </div>
       </div>
     </div>
   );

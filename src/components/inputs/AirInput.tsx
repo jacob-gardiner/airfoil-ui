@@ -4,6 +4,7 @@ interface AirInputProps {
   placeholder?: string;
   disabled?: boolean;
   error?: string;
+  ariaLabel?: string;
 }
 
 export const airInputTestId = 'airfoilInput';
@@ -16,12 +17,14 @@ const AirInput: React.FC<AirInputProps> = ({
   placeholder,
   disabled,
   error,
+  ariaLabel,
 }) => (
   <>
     <input
       data-testid={airInputTestId}
       className={`${baseInputStyles} ${error ? 'border-red-500' : ''}`}
       type="text"
+      aria-label={ariaLabel}
       placeholder={placeholder}
       disabled={disabled}
     />
