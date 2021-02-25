@@ -19,6 +19,9 @@ function App() {
             ariaLabel="example-aria-label"
           />
         </div>
+        <div className="mt-3">
+          <AirInput placeholder="Input with aria label" value="Some value" />
+        </div>
       </div>
     </div>
   );

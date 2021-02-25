@@ -6,6 +6,8 @@ interface AirInputProps {
   disabled?: boolean;
   error?: string;
   ariaLabel?: string;
+  value?: string;
+  onChange?(event: object): any;
 }
 
 export const airInputTestId = 'airfoilInput';
@@ -19,6 +21,8 @@ const AirInput: React.FC<AirInputProps> = ({
   disabled,
   error,
   ariaLabel,
+  value,
+  onChange,
 }) => (
   <>
     <input
@@ -27,6 +31,9 @@ const AirInput: React.FC<AirInputProps> = ({
       aria-label={ariaLabel}
       placeholder={placeholder}
       disabled={disabled}
+      value={value}
+      onChange={onChange}
+      readOnly={!onChange}
     />
     {error && <ErrorMessage>{error}</ErrorMessage>}
   </>

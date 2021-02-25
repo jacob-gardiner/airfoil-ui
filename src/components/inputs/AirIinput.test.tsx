@@ -1,23 +1,29 @@
 import React from 'react';
-import { render, cleanup, RenderResult } from '@testing-library/react/pure'
+import {
+  render,
+  cleanup,
+  RenderResult,
+  fireEvent,
+} from '@testing-library/react/pure';
 import AirInput from './AirInput';
 
 const queryInput = () => document.querySelector('input');
 
 const errorMessageText = 'Im an error';
 
-jest.mock('./ErrorMessage', () => ({ children }: JSX.ElementChildrenAttribute) =>
-{
-  expect(children).toBe(errorMessageText)
-  return  (<div data-testid="error-message">Error goes here</div>)
-})
+jest.mock(
+  './ErrorMessage',
+  () => ({ children }: JSX.ElementChildrenAttribute) => {
+    expect(children).toBe(errorMessageText);
+    return <div data-testid="error-message">Error goes here</div>;
+  }
+);
 
-const findByTestIdNotFound = (id: string) => `Unable to find an element by: [data-testid="${id}"]`
+const findByTestIdNotFound = (id: string) =>
+  `Unable to find an element by: [data-testid="${id}"]`;
 
 describe('air input does what it should...', () => {
-
   describe('Input component', () => {
-
     afterEach(() => {
       cleanup();
     });
@@ -44,19 +50,37 @@ describe('air input does what it should...', () => {
       expect(queryInput()).toBeDisabled();
     });
 
+    it('can pass the value as a prop and sets input to readonly if no onChange handler is set', async () => {
+      const value = 'Some text';
+      const label = 'example-label';
 
-    it('does not render the error message if there is no error', async () => {
-      const {
-        findByTestId
-      } = render(<AirInput />);
-      expect(queryInput()).not.toHaveClass('border-red-500');
-      await expect(findByTestId('error-message')).rejects.toThrow(findByTestIdNotFound('error-message'))
-
+      const rendered = render(<AirInput value={value} ariaLabel={label} />);
+      const input = await rendered.findByLabelText(label);
+      expect(input).toHaveValue(value);
     });
 
-  })
-  describe('Error component', () => {
+    it('fires the onChange handler when the value changes', async () => {
+      const value = 'Some text';
+      const label = 'example-label';
+      const onChange = jest.fn();
 
+      const rendered = render(
+        <AirInput ariaLabel={label} value={value} onChange={onChange} />
+      );
+      const input = await rendered.findByLabelText(label);
+      fireEvent.change(input, { target: { value: `${value}s` } });
+      expect(onChange).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not render the error message if there is no error', async () => {
+      const { findByTestId } = render(<AirInput />);
+      expect(queryInput()).not.toHaveClass('border-red-500');
+      await expect(findByTestId('error-message')).rejects.toThrow(
+        findByTestIdNotFound('error-message')
+      );
+    });
+  });
+  describe('Error component', () => {
     let wrapper: RenderResult;
 
     beforeAll(() => {
@@ -65,7 +89,7 @@ describe('air input does what it should...', () => {
 
     afterAll(() => {
       cleanup();
-    })
+    });
 
     it('changes the border to red if there is an error', async () => {
       expect(queryInput()).toHaveClass('border-red-500');
@@ -74,7 +98,5 @@ describe('air input does what it should...', () => {
       const errorMessageElement = await wrapper.findByTestId('error-message');
       expect(errorMessageElement).toBeInTheDocument();
     });
-
-
-  })
+  });
 });
