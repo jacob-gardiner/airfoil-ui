@@ -5,7 +5,7 @@ import {
   RenderResult,
   screen,
   fireEvent,
-} from '@testing-library/react/pure';
+} from '@testing-library/react';
 import AirInput from './AirInput';
 
 const queryInput = () => document.querySelector('input');
@@ -26,27 +26,22 @@ const findByTestIdNotFound = (id: string) =>
 describe('air input does what it should...', () => {
   describe('Input component', () => {
     describe('defaults', () => {
-      afterAll(() => {
-        cleanup();
-      });
-      beforeAll(() => {
-        render(<AirInput />);
-      });
       it('defaults the type to text', async () => {
+        render(<AirInput />);
+
         expect(queryInput()).toBeInTheDocument();
       });
       it('does not set the placeholder', async () => {
+        render(<AirInput />);
         expect(queryInput()).not.toHaveAttribute('placeholder');
       });
       it('does not set aria-label', async () => {
+        render(<AirInput />);
         expect(queryInput()).not.toHaveAttribute('aria-label');
       });
     });
 
     describe('props', () => {
-      afterEach(() => {
-        cleanup();
-      });
       it('sets the placeholder text for the input', async () => {
         render(<AirInput placeholder="My Placeholder" />);
 
@@ -66,9 +61,6 @@ describe('air input does what it should...', () => {
       });
     });
     describe('change handling', () => {
-      afterEach(() => {
-        cleanup();
-      });
       it('can pass the value as a prop and sets input to readonly if no onChange handler is set', async () => {
         const value = 'Some text';
         const label = 'example-label';
@@ -94,18 +86,12 @@ describe('air input does what it should...', () => {
   });
   describe('Error handling', () => {
     describe('When there is an error', () => {
-      beforeAll(() => {
-        render(<AirInput error={errorMessageText} />);
-      });
-
-      afterAll(() => {
-        cleanup();
-      });
-
       it('changes the border to red if there is an error', async () => {
+        render(<AirInput error={errorMessageText} />);
         expect(queryInput()).toHaveClass('border-red-500');
       });
       it('shows an error message if passed', async () => {
+        render(<AirInput error={errorMessageText} />);
         const errorMessageElement = await screen.findByTestId('error-message');
         expect(errorMessageElement).toBeInTheDocument();
       });
