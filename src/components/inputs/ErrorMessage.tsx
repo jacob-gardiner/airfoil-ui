@@ -10,10 +10,9 @@ type ErrorMessageProps = {
 const ErrorMessage: React.FC<ErrorMessageProps> = ({
   children,
   level = 'default',
-}) => (
-  <div className={`text-xs text-red-${level === 'critical' ? '1000' : '500'}`}>
-    {children}
-  </div>
-);
+}) => {
+  const color = `text-red-${level === 'critical' ? '1000' : '500'}`;
+  return <div className={`text-xs ${color}`}>{children}</div>;
+};
 
 export default ErrorMessage;
